@@ -9,7 +9,7 @@ from ...db.session import session_scope
 from ...ml import photo_optimizer
 from ...services.vectors import load_photo_vectors, stack_vectors
 from ..deps import current_user, rate_limiter
-from ..schemas import OptimizeRequest
+from ..schemas import SensitivityRequest, OptimizeRequest
 
 router = APIRouter(prefix="/laboratory", tags=["laboratory"],
                    dependencies=[Depends(rate_limiter)])
@@ -70,10 +70,17 @@ def optimize(profile_id: str, body: OptimizeRequest, user_id: str = Depends(curr
 
 
 @router.post("/{profile_id}/sensitivity")
-def sensitivity(profile_id: str, body: OptimizeRequest, user_id: str = Depends(current_user)):
+def sensitivity(profile_id: str, body: SensitivityRequest,
+                user_id: str = Depends(current_user)):
     rows, emb = load_matrix(profile_id, user_id)
     quality = np.asarray([r["quality"] for r in rows], dtype=np.float64)
-    return photo_optimizer.sensitivity_analysis(rows, emb, quality, seed=body.seed)
+    for name, values in (("lambdas", body.lambdas), ("mus", body.mus)):
+        if not values or any(not (0.0 <= v <= 1.0) for v in values):
+            raise HTTPException(status_code=422,
+                                detail=f"{name} must be a non-empty list within [0, 1]")
+    return photo_optimizer.sensitivity_analysis(rows, emb, quality,
+                                                lambdas=body.lambdas, mus=body.mus,
+                                                seed=body.seed)
 
 
 @router.post("/{profile_id}/ablation")

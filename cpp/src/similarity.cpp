@@ -80,6 +80,15 @@ bool EmbeddingMatrix::is_row_normalized(std::size_t i, double tol) const {
 }
 
 // -------------------------------------------------------------- similarity
+double cosine(std::span<const double> a, std::span<const double> b) {
+    if (a.size() != b.size()) throw std::invalid_argument("cosine: dimension mismatch");
+    if (a.empty()) return std::numeric_limits<double>::quiet_NaN();
+    double out = 0.0;
+    if (ae_cosine_raw(a.data(), b.data(), a.size(), &out) != AE_OK)
+        return std::numeric_limits<double>::quiet_NaN();  // zero vector -> NaN, not 1.0
+    return out;
+}
+
 double cosine_unit(std::span<const double> a, std::span<const double> b) {
     if (a.size() != b.size()) throw std::invalid_argument("cosine_unit: dimension mismatch");
     double out = 0.0;

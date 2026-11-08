@@ -95,10 +95,21 @@ def add_observation(experiment_id: str, body: ObservationIn,
     The schema separates ``missing`` (never observed) from ``failures`` (observed
     non-conversions) so a conversion rate is only computed when a denominator
     actually exists.
+
+    Pass ``variant_id`` to credit one arm; omit it to add the same counts to every
+    arm (a whole-experiment batch, which is only correct when the counts describe
+    impressions shared by all arms).
     """
     with session_scope() as s:
         exp = _owned(s, experiment_id, user_id)
         variants = sorted(exp.variants, key=lambda v: v.label)
+        if body.variant_id is not None:
+            target = [v for v in variants if v.id == body.variant_id]
+            if not target:
+                raise HTTPException(status_code=404,
+                                    detail=f"variant {body.variant_id} is not part of "
+                                           f"this experiment")
+            variants = target
         for v in variants:
             v.successes += body.successes
             v.failures += body.failures

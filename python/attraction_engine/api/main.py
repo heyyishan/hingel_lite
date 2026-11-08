@@ -27,6 +27,7 @@ from fastapi import APIRouter, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from prometheus_client import CONTENT_TYPE_LATEST, Counter, Histogram, REGISTRY, generate_latest
 
 from .. import native
@@ -117,7 +118,26 @@ def metrics():
     return PlainTextResponse(generate_latest(REGISTRY), media_type=CONTENT_TYPE_LATEST)
 
 
-# Serve the built frontend when present so a single process can host everything.
+# Serve the built frontend when present so a single process hosts everything.
+# SPA routing: unknown paths must return index.html (the client router handles
+# them), while /api/* must never fall through to the static app.
 _dist = Path(os.environ.get("AE_FRONTEND_DIST", Path(__file__).resolve().parents[3] / "frontend" / "dist"))
-if _dist.is_dir():
-    app.mount("/", StaticFiles(directory=str(_dist), html=True), name="frontend")
+if (_dist / "index.html").is_file():
+    _assets = _dist / "assets"
+    if _assets.is_dir():
+        app.mount("/assets", StaticFiles(directory=str(_assets)), name="assets")
+
+    @app.get("/", include_in_schema=False)
+    def _index() -> FileResponse:
+        return FileResponse(_dist / "index.html")
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    def _spa(full_path: str) -> FileResponse:
+        candidate = (_dist / full_path).resolve()
+        if full_path and candidate.is_file() and _dist.resolve() in candidate.parents:
+            return FileResponse(candidate)
+        return FileResponse(_dist / "index.html")
+else:
+    @app.get("/", include_in_schema=False)
+    def _no_frontend() -> dict:
+        return {"detail": "frontend not built", "hint": "cd frontend && npm install && npm run build"}

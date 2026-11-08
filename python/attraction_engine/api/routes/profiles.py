@@ -9,9 +9,9 @@ from sqlalchemy import select
 from ...db.models import Embedding, Photograph, Profile, Prompt
 from ...db.session import session_scope
 from ...ml import encoders, image_analysis
-from ...services import storage
-from ..deps import current_user, rate_limiter
-from ..schemas import PhotoOrderIn, ProfileIn, ProfileOut, PromptIn, PromptOut
+from ...services import auth, storage
+from ..deps import current_user, current_user_optional, rate_limiter
+from ..schemas import ProfilePatch, PhotoOrderIn, ProfileIn, ProfileOut, PromptIn, PromptOut
 
 router = APIRouter(prefix="/profiles", tags=["profiles"],
                    dependencies=[Depends(rate_limiter)])
@@ -71,13 +71,18 @@ def get_profile(profile_id: str, user_id: str = Depends(current_user)):
 
 
 @router.patch("/{profile_id}", response_model=ProfileOut)
-def update_profile(profile_id: str, body: ProfileIn, user_id: str = Depends(current_user)):
+def update_profile(profile_id: str, body: ProfilePatch, user_id: str = Depends(current_user)):
     with session_scope() as s:
         profile = _owned_profile(s, profile_id, user_id)
-        profile.name = body.name
-        profile.description = body.description
-        profile.structured_prefs = body.structured_prefs
-        profile.interests = body.interests
+        data = body.model_dump(exclude_unset=True)
+        if "name" in data and data["name"] is not None:
+            profile.name = data["name"]
+        if "description" in data:
+            profile.description = data["description"]
+        if "structured_prefs" in data and data["structured_prefs"] is not None:
+            profile.structured_prefs = data["structured_prefs"]
+        if "interests" in data and data["interests"] is not None:
+            profile.interests = [i.strip() for i in data["interests"] if i and i.strip()]
         if body.is_primary:
             for other in s.scalars(select(Profile).where(Profile.user_id == user_id)).all():
                 other.is_primary = (other.id == profile.id)
@@ -163,7 +168,11 @@ async def upload_photo(profile_id: str, file: UploadFile = File(...),
         s.add(Embedding(photo_id=photo.id, profile_id=profile.id, kind="image",
                         encoder=encoder_name, dim=int(emb.size), vec=emb.tolist()))
         s.flush()
+        # The upload response mirrors GET /photos for the same photograph, so a
+        # client never has to read `quality` from two different places.
         return {"id": photo.id, "position": photo.position, "deduplicated": dedup,
+                "quality": photo.quality, "width": photo.width, "height": photo.height,
+                "bytes": photo.bytes, "mime": photo.mime,
                 "analysis": analysis, "encoder": encoder_name, "sha256": digest}
 
 
@@ -171,17 +180,40 @@ async def upload_photo(profile_id: str, file: UploadFile = File(...),
 def list_photos(profile_id: str, user_id: str = Depends(current_user)):
     with session_scope() as s:
         profile = _owned_profile(s, profile_id, user_id)
-        return {"photos": [
-            {"id": p.id, "position": p.position, "sha256": p.sha256, "mime": p.mime,
-             "width": p.width, "height": p.height, "bytes": p.bytes, "quality": p.quality,
-             "analysis": p.analysis,
-             "url": f"/api/profiles/{profile_id}/photos/{p.id}/raw"}
-            for p in sorted(profile.photos, key=lambda x: x.position)
-        ]}
+        photos = []
+        for p in sorted(profile.photos, key=lambda x: x.position):
+            # The signed URL is what an <img> can actually load: a browser cannot
+            # send the bearer header on an image request. When no signing secret is
+            # configured `url` is omitted and clients fall back to the credentialed
+            # endpoint, so `urlFor()` returns "" instead of a broken "?sig=" link.
+            sig = auth.sign_media(user_id, p.id)
+            photos.append({
+                "id": p.id, "position": p.position, "sha256": p.sha256, "mime": p.mime,
+                "width": p.width, "height": p.height, "bytes": p.bytes, "quality": p.quality,
+                "analysis": p.analysis,
+                **({"url": f"/api/profiles/{profile_id}/photos/{p.id}/raw?sig={sig}"}
+                   if sig else {}),
+            })
+        return {"photos": photos}
 
 
 @router.get("/{profile_id}/photos/{photo_id}/raw")
-def photo_raw(profile_id: str, photo_id: str, user_id: str = Depends(current_user)):
+def photo_raw(profile_id: str, photo_id: str, sig: str | None = None,
+              user_id: str = Depends(current_user_optional)):
+    """Serve the stored bytes.
+
+    Accepts either a bearer token (API clients) or a short-lived HMAC signature
+    issued alongside the photo list (browsers rendering <img> tags).
+    """
+    if user_id is None:
+        if not sig:
+            raise HTTPException(status_code=401, detail="authentication required")
+        # The signature is bound to a user id; find the owner of the profile first.
+        with session_scope() as probe:
+            owner = probe.scalar(select(Profile.user_id).where(Profile.id == profile_id))
+        if owner is None or not auth.verify_media(owner, photo_id, sig):
+            raise HTTPException(status_code=403, detail="invalid or expired media signature")
+        user_id = owner
     with session_scope() as s:
         profile = _owned_profile(s, profile_id, user_id)
         photo = s.get(Photograph, photo_id)

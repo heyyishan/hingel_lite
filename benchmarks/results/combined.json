@@ -1,0 +1,1360 @@
+{
+  "mode": "quick",
+  "environment": {
+    "timestamp_utc": "2026-11-08T07:41:37Z",
+    "os": "Linux 6.1.189+",
+    "distribution": "Debian GNU/Linux 13 (trixie)",
+    "kernel": "#1 SMP PREEMPT_DYNAMIC Mon Nov  2 21:08:28 UTC 2026",
+    "cpu_model": "Intel(R) Xeon(R) Processor @ 2.60GHz",
+    "cpu_count_logical": 2,
+    "cpu_flags": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch cpuid_fault invpcid_single ssbd ibrs ibpb stibp",
+    "memory_total_kb": "2030416",
+    "compiler": {
+      "gcc": "14.2.0",
+      "gxx_std_supported": "c++26",
+      "cpp_compile_flags": "-O3 -std=c++26 -DNDEBUG",
+      "c_compile_flags": "-std=c23 -O3 -fno-math-errno -fno-trapping-math",
+      "sanitizers_in_release": false,
+      "artifacts": {
+        "ae_bench": "/home/user/attraction-engine/cpp/build/ae_bench: ELF 64-bit LSB pie executable, x86-64, version 1 (GNU/Linux), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=0b054fa9347498",
+        "libae_core.a": "/home/user/attraction-engine/cpp/build/libae_core.a: current ar archive",
+        "compile_flags_sample": "-O3 -DNDEBUG -std=gnu2x -fPIC -O3"
+      }
+    },
+    "python": {
+      "version": "3.13.16",
+      "implementation": "CPython"
+    },
+    "libraries": {
+      "numpy": "2.3.5",
+      "torch": "2.15.0+cpu",
+      "open_clip": "4.2.1",
+      "sentence_transformers": "6.2.0",
+      "duckdb": "2.0.0",
+      "polars": "2.1.0"
+    },
+    "native_core": {
+      "cxx_dialect": 202400,
+      "has_expected": true,
+      "has_print": true,
+      "has_format": true,
+      "has_openmp": true,
+      "compiler": "gcc",
+      "compiler_version": "14.2.0",
+      "target": "avx512f",
+      "mask": 31,
+      "native_available": true
+    },
+    "notes": [
+      "Benchmarks run inside a container on a shared host with 2 vCPUs.",
+      "Absolute timings are machine-specific; ratios are the portable result.",
+      "Google Benchmark reports CPU time and wall time; medians across repetitions are used in the report."
+    ]
+  },
+  "native_results": [
+    {
+      "name": "BM_DotProduct/128_median",
+      "family": "DotProduct",
+      "variant": null,
+      "args": [
+        128
+      ],
+      "aggregate": "median",
+      "real_ms": 1.7e-05,
+      "cpu_ms": 1.7e-05,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_DotProduct/384_median",
+      "family": "DotProduct",
+      "variant": null,
+      "args": [
+        384
+      ],
+      "aggregate": "median",
+      "real_ms": 6.4e-05,
+      "cpu_ms": 6.3e-05,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_DotProduct/512_median",
+      "family": "DotProduct",
+      "variant": null,
+      "args": [
+        512
+      ],
+      "aggregate": "median",
+      "real_ms": 7.9e-05,
+      "cpu_ms": 7.9e-05,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_DotProduct/768_median",
+      "family": "DotProduct",
+      "variant": null,
+      "args": [
+        768
+      ],
+      "aggregate": "median",
+      "real_ms": 9.1e-05,
+      "cpu_ms": 9.1e-05,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_DotProduct/1536_median",
+      "family": "DotProduct",
+      "variant": null,
+      "args": [
+        1536
+      ],
+      "aggregate": "median",
+      "real_ms": 0.000175,
+      "cpu_ms": 0.000175,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_DotScalar/1536_median",
+      "family": "DotScalar",
+      "variant": null,
+      "args": [
+        1536
+      ],
+      "aggregate": "median",
+      "real_ms": 0.000459,
+      "cpu_ms": 0.000459,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_DotAvx2/1536_median",
+      "family": "DotAvx2",
+      "variant": null,
+      "args": [
+        1536
+      ],
+      "aggregate": "median",
+      "real_ms": 0.00022,
+      "cpu_ms": 0.00022,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_DotAvx512/1536_median",
+      "family": "DotAvx512",
+      "variant": null,
+      "args": [
+        1536
+      ],
+      "aggregate": "median",
+      "real_ms": 0.000116,
+      "cpu_ms": 0.000116,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_BatchCosine/512/1_median",
+      "family": "BatchCosine",
+      "variant": null,
+      "args": [
+        512,
+        1
+      ],
+      "aggregate": "median",
+      "real_ms": 2.286121,
+      "cpu_ms": 2.285603,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_BatchCosine/512/2_median",
+      "family": "BatchCosine",
+      "variant": null,
+      "args": [
+        512,
+        2
+      ],
+      "aggregate": "median",
+      "real_ms": 1.156959,
+      "cpu_ms": 1.156561,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_BatchCosine/4096/1_median",
+      "family": "BatchCosine",
+      "variant": null,
+      "args": [
+        4096,
+        1
+      ],
+      "aggregate": "median",
+      "real_ms": 26.121633,
+      "cpu_ms": 26.110969,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_BatchCosine/4096/2_median",
+      "family": "BatchCosine",
+      "variant": null,
+      "args": [
+        4096,
+        2
+      ],
+      "aggregate": "median",
+      "real_ms": 12.526845,
+      "cpu_ms": 12.523941,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_BatchCosine/32768/1_median",
+      "family": "BatchCosine",
+      "variant": null,
+      "args": [
+        32768,
+        1
+      ],
+      "aggregate": "median",
+      "real_ms": 512.594868,
+      "cpu_ms": 512.463602,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_BatchCosine/32768/2_median",
+      "family": "BatchCosine",
+      "variant": null,
+      "args": [
+        32768,
+        2
+      ],
+      "aggregate": "median",
+      "real_ms": 240.795086,
+      "cpu_ms": 240.432739,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_BatchCosineEigen/512/1_median",
+      "family": "BatchCosineEigen",
+      "variant": null,
+      "args": [
+        512,
+        1
+      ],
+      "aggregate": "median",
+      "real_ms": 0.375323,
+      "cpu_ms": 0.375154,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_BatchCosineEigen/512/2_median",
+      "family": "BatchCosineEigen",
+      "variant": null,
+      "args": [
+        512,
+        2
+      ],
+      "aggregate": "median",
+      "real_ms": 0.384003,
+      "cpu_ms": 0.383804,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_BatchCosineEigen/4096/1_median",
+      "family": "BatchCosineEigen",
+      "variant": null,
+      "args": [
+        4096,
+        1
+      ],
+      "aggregate": "median",
+      "real_ms": 3.824115,
+      "cpu_ms": 3.821877,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_BatchCosineEigen/4096/2_median",
+      "family": "BatchCosineEigen",
+      "variant": null,
+      "args": [
+        4096,
+        2
+      ],
+      "aggregate": "median",
+      "real_ms": 3.786866,
+      "cpu_ms": 3.786874,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_BatchCosineEigen/32768/1_median",
+      "family": "BatchCosineEigen",
+      "variant": null,
+      "args": [
+        32768,
+        1
+      ],
+      "aggregate": "median",
+      "real_ms": 49.834404,
+      "cpu_ms": 49.834399,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_BatchCosineEigen/32768/2_median",
+      "family": "BatchCosineEigen",
+      "variant": null,
+      "args": [
+        32768,
+        2
+      ],
+      "aggregate": "median",
+      "real_ms": 55.57121,
+      "cpu_ms": 55.55171,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_TopK<ae::TopKStrategy::sort_full>/4096/10_median",
+      "family": "TopK",
+      "variant": "TopKStrategy::sort_full",
+      "args": [
+        4096,
+        10
+      ],
+      "aggregate": "median",
+      "real_ms": 0.241002,
+      "cpu_ms": 0.241005,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_TopK<ae::TopKStrategy::sort_full>/65536/10_median",
+      "family": "TopK",
+      "variant": "TopKStrategy::sort_full",
+      "args": [
+        65536,
+        10
+      ],
+      "aggregate": "median",
+      "real_ms": 5.549715,
+      "cpu_ms": 5.549128,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_TopK<ae::TopKStrategy::sort_full>/65536/100_median",
+      "family": "TopK",
+      "variant": "TopKStrategy::sort_full",
+      "args": [
+        65536,
+        100
+      ],
+      "aggregate": "median",
+      "real_ms": 5.503298,
+      "cpu_ms": 5.503367,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_TopK<ae::TopKStrategy::sort_full>/1048576/10_median",
+      "family": "TopK",
+      "variant": "TopKStrategy::sort_full",
+      "args": [
+        1048576,
+        10
+      ],
+      "aggregate": "median",
+      "real_ms": 114.41421,
+      "cpu_ms": 114.414707,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_TopK<ae::TopKStrategy::partial_sort>/4096/10_median",
+      "family": "TopK",
+      "variant": "TopKStrategy::partial_sort",
+      "args": [
+        4096,
+        10
+      ],
+      "aggregate": "median",
+      "real_ms": 0.009162,
+      "cpu_ms": 0.00916,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_TopK<ae::TopKStrategy::partial_sort>/65536/10_median",
+      "family": "TopK",
+      "variant": "TopKStrategy::partial_sort",
+      "args": [
+        65536,
+        10
+      ],
+      "aggregate": "median",
+      "real_ms": 0.135421,
+      "cpu_ms": 0.135419,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_TopK<ae::TopKStrategy::partial_sort>/65536/100_median",
+      "family": "TopK",
+      "variant": "TopKStrategy::partial_sort",
+      "args": [
+        65536,
+        100
+      ],
+      "aggregate": "median",
+      "real_ms": 0.160861,
+      "cpu_ms": 0.16086,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_TopK<ae::TopKStrategy::partial_sort>/1048576/10_median",
+      "family": "TopK",
+      "variant": "TopKStrategy::partial_sort",
+      "args": [
+        1048576,
+        10
+      ],
+      "aggregate": "median",
+      "real_ms": 2.843579,
+      "cpu_ms": 2.836419,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_TopK<ae::TopKStrategy::nth_element>/4096/10_median",
+      "family": "TopK",
+      "variant": "TopKStrategy::nth_element",
+      "args": [
+        4096,
+        10
+      ],
+      "aggregate": "median",
+      "real_ms": 0.013735,
+      "cpu_ms": 0.013733,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_TopK<ae::TopKStrategy::nth_element>/65536/10_median",
+      "family": "TopK",
+      "variant": "TopKStrategy::nth_element",
+      "args": [
+        65536,
+        10
+      ],
+      "aggregate": "median",
+      "real_ms": 0.602487,
+      "cpu_ms": 0.602116,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_TopK<ae::TopKStrategy::nth_element>/65536/100_median",
+      "family": "TopK",
+      "variant": "TopKStrategy::nth_element",
+      "args": [
+        65536,
+        100
+      ],
+      "aggregate": "median",
+      "real_ms": 0.634662,
+      "cpu_ms": 0.632273,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_TopK<ae::TopKStrategy::nth_element>/1048576/10_median",
+      "family": "TopK",
+      "variant": "TopKStrategy::nth_element",
+      "args": [
+        1048576,
+        10
+      ],
+      "aggregate": "median",
+      "real_ms": 3.565469,
+      "cpu_ms": 3.565081,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_TopK<ae::TopKStrategy::heap_bounded>/4096/10_median",
+      "family": "TopK",
+      "variant": "TopKStrategy::heap_bounded",
+      "args": [
+        4096,
+        10
+      ],
+      "aggregate": "median",
+      "real_ms": 0.007146,
+      "cpu_ms": 0.007146,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_TopK<ae::TopKStrategy::heap_bounded>/65536/10_median",
+      "family": "TopK",
+      "variant": "TopKStrategy::heap_bounded",
+      "args": [
+        65536,
+        10
+      ],
+      "aggregate": "median",
+      "real_ms": 0.094972,
+      "cpu_ms": 0.094964,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_TopK<ae::TopKStrategy::heap_bounded>/65536/100_median",
+      "family": "TopK",
+      "variant": "TopKStrategy::heap_bounded",
+      "args": [
+        65536,
+        100
+      ],
+      "aggregate": "median",
+      "real_ms": 0.130717,
+      "cpu_ms": 0.130708,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_TopK<ae::TopKStrategy::heap_bounded>/1048576/10_median",
+      "family": "TopK",
+      "variant": "TopKStrategy::heap_bounded",
+      "args": [
+        1048576,
+        10
+      ],
+      "aggregate": "median",
+      "real_ms": 1.548528,
+      "cpu_ms": 1.54854,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_Optimize<ae::Strategy::greedy>/8_median",
+      "family": "Optimize",
+      "variant": "Strategy::greedy",
+      "args": [
+        8
+      ],
+      "aggregate": "median",
+      "real_ms": 0.0141,
+      "cpu_ms": 0.014098,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_Optimize<ae::Strategy::greedy>/16_median",
+      "family": "Optimize",
+      "variant": "Strategy::greedy",
+      "args": [
+        16
+      ],
+      "aggregate": "median",
+      "real_ms": 0.426697,
+      "cpu_ms": 0.426691,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_Optimize<ae::Strategy::greedy>/32_median",
+      "family": "Optimize",
+      "variant": "Strategy::greedy",
+      "args": [
+        32
+      ],
+      "aggregate": "median",
+      "real_ms": 10.655413,
+      "cpu_ms": 10.655507,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_Optimize<ae::Strategy::beam>/8_median",
+      "family": "Optimize",
+      "variant": "Strategy::beam",
+      "args": [
+        8
+      ],
+      "aggregate": "median",
+      "real_ms": 0.048502,
+      "cpu_ms": 0.048501,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_Optimize<ae::Strategy::beam>/16_median",
+      "family": "Optimize",
+      "variant": "Strategy::beam",
+      "args": [
+        16
+      ],
+      "aggregate": "median",
+      "real_ms": 0.630141,
+      "cpu_ms": 0.629944,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_Optimize<ae::Strategy::beam>/32_median",
+      "family": "Optimize",
+      "variant": "Strategy::beam",
+      "args": [
+        32
+      ],
+      "aggregate": "median",
+      "real_ms": 8.893606,
+      "cpu_ms": 8.893213,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_Optimize<ae::Strategy::simulated_annealing>/8_median",
+      "family": "Optimize",
+      "variant": "Strategy::simulated_annealing",
+      "args": [
+        8
+      ],
+      "aggregate": "median",
+      "real_ms": 1.432435,
+      "cpu_ms": 1.432252,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_Optimize<ae::Strategy::simulated_annealing>/16_median",
+      "family": "Optimize",
+      "variant": "Strategy::simulated_annealing",
+      "args": [
+        16
+      ],
+      "aggregate": "median",
+      "real_ms": 3.809511,
+      "cpu_ms": 3.80955,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_Optimize<ae::Strategy::exhaustive>/6_median",
+      "family": "Optimize",
+      "variant": "Strategy::exhaustive",
+      "args": [
+        6
+      ],
+      "aggregate": "median",
+      "real_ms": 0.023446,
+      "cpu_ms": 0.023447,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_Optimize<ae::Strategy::exhaustive>/8_median",
+      "family": "Optimize",
+      "variant": "Strategy::exhaustive",
+      "args": [
+        8
+      ],
+      "aggregate": "median",
+      "real_ms": 2.010756,
+      "cpu_ms": 2.010727,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_Mmr/200_median",
+      "family": "Mmr",
+      "variant": null,
+      "args": [
+        200
+      ],
+      "aggregate": "median",
+      "real_ms": 0.173055,
+      "cpu_ms": 0.173044,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_Mmr/2000_median",
+      "family": "Mmr",
+      "variant": null,
+      "args": [
+        2000
+      ],
+      "aggregate": "median",
+      "real_ms": 3.966786,
+      "cpu_ms": 3.96637,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_ProbSuperiority_median",
+      "family": "ProbSuperiority",
+      "variant": null,
+      "args": [],
+      "aggregate": "median",
+      "real_ms": 1.232681,
+      "cpu_ms": 1.232615,
+      "time_unit": "ms",
+      "iterations": 2
+    },
+    {
+      "name": "BM_CredibleInterval_median",
+      "family": "CredibleInterval",
+      "variant": null,
+      "args": [],
+      "aggregate": "median",
+      "real_ms": 0.028264,
+      "cpu_ms": 0.028252,
+      "time_unit": "ms",
+      "iterations": 2
+    }
+  ],
+  "python_results": [
+    {
+      "benchmark": "dot_product",
+      "implementation": "numpy_dot",
+      "n": 128,
+      "median_ms": 0.00204,
+      "min_ms": 0.00196,
+      "p95_ms": 0.00368,
+      "repeats": 10
+    },
+    {
+      "benchmark": "dot_product",
+      "implementation": "numpy_dot",
+      "n": 384,
+      "median_ms": 0.00206,
+      "min_ms": 0.00202,
+      "p95_ms": 0.00212,
+      "repeats": 10
+    },
+    {
+      "benchmark": "dot_product",
+      "implementation": "numpy_dot",
+      "n": 512,
+      "median_ms": 0.00208,
+      "min_ms": 0.00205,
+      "p95_ms": 0.00213,
+      "repeats": 10
+    },
+    {
+      "benchmark": "dot_product",
+      "implementation": "numpy_dot",
+      "n": 768,
+      "median_ms": 0.00223,
+      "min_ms": 0.00218,
+      "p95_ms": 0.00249,
+      "repeats": 10
+    },
+    {
+      "benchmark": "dot_product",
+      "implementation": "numpy_dot",
+      "n": 1536,
+      "median_ms": 0.00238,
+      "min_ms": 0.00237,
+      "p95_ms": 0.00242,
+      "repeats": 10
+    },
+    {
+      "benchmark": "top_k",
+      "implementation": "numpy_argpartition",
+      "n": 4096,
+      "k": 10,
+      "median_ms": 0.01721,
+      "min_ms": 0.01698,
+      "p95_ms": 0.01978,
+      "repeats": 10
+    },
+    {
+      "benchmark": "top_k",
+      "implementation": "numpy_full_argsort",
+      "n": 4096,
+      "k": 10,
+      "median_ms": 0.06549,
+      "min_ms": 0.06304,
+      "p95_ms": 0.08853,
+      "repeats": 10
+    },
+    {
+      "benchmark": "top_k",
+      "implementation": "numpy_argpartition",
+      "n": 65536,
+      "k": 10,
+      "median_ms": 0.19121,
+      "min_ms": 0.15746,
+      "p95_ms": 0.36076,
+      "repeats": 10
+    },
+    {
+      "benchmark": "top_k",
+      "implementation": "numpy_full_argsort",
+      "n": 65536,
+      "k": 10,
+      "median_ms": 1.38932,
+      "min_ms": 1.054,
+      "p95_ms": 1.42873,
+      "repeats": 10
+    },
+    {
+      "benchmark": "top_k",
+      "implementation": "numpy_argpartition",
+      "n": 65536,
+      "k": 100,
+      "median_ms": 0.1088,
+      "min_ms": 0.10142,
+      "p95_ms": 0.2288,
+      "repeats": 10
+    },
+    {
+      "benchmark": "top_k",
+      "implementation": "numpy_full_argsort",
+      "n": 65536,
+      "k": 100,
+      "median_ms": 1.27851,
+      "min_ms": 1.04667,
+      "p95_ms": 1.52127,
+      "repeats": 10
+    },
+    {
+      "benchmark": "top_k",
+      "implementation": "numpy_argpartition",
+      "n": 1048576,
+      "k": 10,
+      "median_ms": 2.17596,
+      "min_ms": 2.03538,
+      "p95_ms": 3.39099,
+      "repeats": 10
+    },
+    {
+      "benchmark": "top_k",
+      "implementation": "numpy_full_argsort",
+      "n": 1048576,
+      "k": 10,
+      "median_ms": 29.27137,
+      "min_ms": 28.71687,
+      "p95_ms": 29.7008,
+      "repeats": 10
+    },
+    {
+      "median_ms": 0.64424,
+      "min_ms": 0.61283,
+      "p95_ms": 0.70621,
+      "repeats": 10,
+      "benchmark": "batch_cosine",
+      "implementation": "numpy_blas_matmul",
+      "n": 512,
+      "dim": 384,
+      "queries": 64,
+      "pairs_per_ms": 50863.0
+    },
+    {
+      "median_ms": 4.73105,
+      "min_ms": 4.66162,
+      "p95_ms": 4.90552,
+      "repeats": 10,
+      "benchmark": "batch_cosine",
+      "implementation": "numpy_blas_matmul",
+      "n": 4096,
+      "dim": 384,
+      "queries": 64,
+      "pairs_per_ms": 55409.3
+    },
+    {
+      "median_ms": 22.29498,
+      "min_ms": 21.03779,
+      "p95_ms": 25.01183,
+      "repeats": 10,
+      "benchmark": "batch_cosine",
+      "implementation": "numpy_blas_matmul",
+      "n": 32768,
+      "dim": 384,
+      "queries": 64,
+      "pairs_per_ms": 94063.9
+    },
+    {
+      "benchmark": "mmr",
+      "implementation": "numpy_greedy",
+      "n": 200,
+      "k": 20,
+      "median_ms": 0.3269,
+      "min_ms": 0.32158,
+      "p95_ms": 0.42151,
+      "repeats": 5
+    },
+    {
+      "benchmark": "mmr",
+      "implementation": "numpy_greedy",
+      "n": 2000,
+      "k": 20,
+      "median_ms": 2.52766,
+      "min_ms": 2.40391,
+      "p95_ms": 2.54243,
+      "repeats": 5
+    },
+    {
+      "benchmark": "credible_interval",
+      "implementation": "scipy_beta_ppf",
+      "median_ms": 0.18058,
+      "min_ms": 0.12406,
+      "p95_ms": 0.35562,
+      "repeats": 10
+    },
+    {
+      "benchmark": "prob_superiority",
+      "implementation": "scipy_quadrature",
+      "median_ms": 1.7589,
+      "min_ms": 1.47227,
+      "p95_ms": 1.77702,
+      "repeats": 5
+    }
+  ],
+  "comparisons": [
+    {
+      "workload": "dot 128",
+      "native": "dispatched",
+      "native_ms": 1.7e-05,
+      "baseline": "numpy_dot",
+      "baseline_ms": 0.00204,
+      "speedup": 120.0
+    },
+    {
+      "workload": "dot 384",
+      "native": "dispatched",
+      "native_ms": 6.4e-05,
+      "baseline": "numpy_dot",
+      "baseline_ms": 0.00206,
+      "speedup": 32.19
+    },
+    {
+      "workload": "dot 512",
+      "native": "dispatched",
+      "native_ms": 7.9e-05,
+      "baseline": "numpy_dot",
+      "baseline_ms": 0.00208,
+      "speedup": 26.33
+    },
+    {
+      "workload": "dot 768",
+      "native": "dispatched",
+      "native_ms": 9.1e-05,
+      "baseline": "numpy_dot",
+      "baseline_ms": 0.00223,
+      "speedup": 24.51
+    },
+    {
+      "workload": "dot 1536",
+      "native": "dispatched",
+      "native_ms": 0.000175,
+      "baseline": "numpy_dot",
+      "baseline_ms": 0.00238,
+      "speedup": 13.6
+    },
+    {
+      "workload": "batch_cosine 64x512 d=384",
+      "native": "inhouse+threads=1",
+      "native_ms": 2.286121,
+      "baseline": "numpy_blas_matmul",
+      "baseline_ms": 0.64424,
+      "speedup": 0.28
+    },
+    {
+      "workload": "batch_cosine 64x512 d=384",
+      "native": "inhouse+threads=2",
+      "native_ms": 1.156959,
+      "baseline": "numpy_blas_matmul",
+      "baseline_ms": 0.64424,
+      "speedup": 0.56
+    },
+    {
+      "workload": "batch_cosine 64x4096 d=384",
+      "native": "inhouse+threads=1",
+      "native_ms": 26.121633,
+      "baseline": "numpy_blas_matmul",
+      "baseline_ms": 4.73105,
+      "speedup": 0.18
+    },
+    {
+      "workload": "batch_cosine 64x4096 d=384",
+      "native": "inhouse+threads=2",
+      "native_ms": 12.526845,
+      "baseline": "numpy_blas_matmul",
+      "baseline_ms": 4.73105,
+      "speedup": 0.38
+    },
+    {
+      "workload": "batch_cosine 64x32768 d=384",
+      "native": "inhouse+threads=1",
+      "native_ms": 512.594868,
+      "baseline": "numpy_blas_matmul",
+      "baseline_ms": 22.29498,
+      "speedup": 0.04
+    },
+    {
+      "workload": "batch_cosine 64x32768 d=384",
+      "native": "inhouse+threads=2",
+      "native_ms": 240.795086,
+      "baseline": "numpy_blas_matmul",
+      "baseline_ms": 22.29498,
+      "speedup": 0.09
+    },
+    {
+      "workload": "batch_cosine 64x512 d=384",
+      "native": "eigen+threads=1",
+      "native_ms": 0.375323,
+      "baseline": "numpy_blas_matmul",
+      "baseline_ms": 0.64424,
+      "speedup": 1.72
+    },
+    {
+      "workload": "batch_cosine 64x512 d=384",
+      "native": "eigen+threads=2",
+      "native_ms": 0.384003,
+      "baseline": "numpy_blas_matmul",
+      "baseline_ms": 0.64424,
+      "speedup": 1.68
+    },
+    {
+      "workload": "batch_cosine 64x4096 d=384",
+      "native": "eigen+threads=1",
+      "native_ms": 3.824115,
+      "baseline": "numpy_blas_matmul",
+      "baseline_ms": 4.73105,
+      "speedup": 1.24
+    },
+    {
+      "workload": "batch_cosine 64x4096 d=384",
+      "native": "eigen+threads=2",
+      "native_ms": 3.786866,
+      "baseline": "numpy_blas_matmul",
+      "baseline_ms": 4.73105,
+      "speedup": 1.25
+    },
+    {
+      "workload": "batch_cosine 64x32768 d=384",
+      "native": "eigen+threads=1",
+      "native_ms": 49.834404,
+      "baseline": "numpy_blas_matmul",
+      "baseline_ms": 22.29498,
+      "speedup": 0.45
+    },
+    {
+      "workload": "batch_cosine 64x32768 d=384",
+      "native": "eigen+threads=2",
+      "native_ms": 55.57121,
+      "baseline": "numpy_blas_matmul",
+      "baseline_ms": 22.29498,
+      "speedup": 0.4
+    },
+    {
+      "workload": "top_k n=4096 k=10",
+      "native": "TopKStrategy::sort_full",
+      "native_ms": 0.241002,
+      "baseline": "numpy_argpartition",
+      "baseline_ms": 0.01721,
+      "speedup": 0.07
+    },
+    {
+      "workload": "top_k n=4096 k=10",
+      "native": "TopKStrategy::sort_full",
+      "native_ms": 0.241002,
+      "baseline": "numpy_full_argsort",
+      "baseline_ms": 0.06549,
+      "speedup": 0.27
+    },
+    {
+      "workload": "top_k n=65536 k=10",
+      "native": "TopKStrategy::sort_full",
+      "native_ms": 5.549715,
+      "baseline": "numpy_argpartition",
+      "baseline_ms": 0.19121,
+      "speedup": 0.03
+    },
+    {
+      "workload": "top_k n=65536 k=10",
+      "native": "TopKStrategy::sort_full",
+      "native_ms": 5.549715,
+      "baseline": "numpy_full_argsort",
+      "baseline_ms": 1.38932,
+      "speedup": 0.25
+    },
+    {
+      "workload": "top_k n=65536 k=100",
+      "native": "TopKStrategy::sort_full",
+      "native_ms": 5.503298,
+      "baseline": "numpy_argpartition",
+      "baseline_ms": 0.1088,
+      "speedup": 0.02
+    },
+    {
+      "workload": "top_k n=65536 k=100",
+      "native": "TopKStrategy::sort_full",
+      "native_ms": 5.503298,
+      "baseline": "numpy_full_argsort",
+      "baseline_ms": 1.27851,
+      "speedup": 0.23
+    },
+    {
+      "workload": "top_k n=1048576 k=10",
+      "native": "TopKStrategy::sort_full",
+      "native_ms": 114.41421,
+      "baseline": "numpy_argpartition",
+      "baseline_ms": 2.17596,
+      "speedup": 0.02
+    },
+    {
+      "workload": "top_k n=1048576 k=10",
+      "native": "TopKStrategy::sort_full",
+      "native_ms": 114.41421,
+      "baseline": "numpy_full_argsort",
+      "baseline_ms": 29.27137,
+      "speedup": 0.26
+    },
+    {
+      "workload": "top_k n=4096 k=10",
+      "native": "TopKStrategy::partial_sort",
+      "native_ms": 0.009162,
+      "baseline": "numpy_argpartition",
+      "baseline_ms": 0.01721,
+      "speedup": 1.88
+    },
+    {
+      "workload": "top_k n=4096 k=10",
+      "native": "TopKStrategy::partial_sort",
+      "native_ms": 0.009162,
+      "baseline": "numpy_full_argsort",
+      "baseline_ms": 0.06549,
+      "speedup": 7.15
+    },
+    {
+      "workload": "top_k n=65536 k=10",
+      "native": "TopKStrategy::partial_sort",
+      "native_ms": 0.135421,
+      "baseline": "numpy_argpartition",
+      "baseline_ms": 0.19121,
+      "speedup": 1.41
+    },
+    {
+      "workload": "top_k n=65536 k=10",
+      "native": "TopKStrategy::partial_sort",
+      "native_ms": 0.135421,
+      "baseline": "numpy_full_argsort",
+      "baseline_ms": 1.38932,
+      "speedup": 10.26
+    },
+    {
+      "workload": "top_k n=65536 k=100",
+      "native": "TopKStrategy::partial_sort",
+      "native_ms": 0.160861,
+      "baseline": "numpy_argpartition",
+      "baseline_ms": 0.1088,
+      "speedup": 0.68
+    },
+    {
+      "workload": "top_k n=65536 k=100",
+      "native": "TopKStrategy::partial_sort",
+      "native_ms": 0.160861,
+      "baseline": "numpy_full_argsort",
+      "baseline_ms": 1.27851,
+      "speedup": 7.95
+    },
+    {
+      "workload": "top_k n=1048576 k=10",
+      "native": "TopKStrategy::partial_sort",
+      "native_ms": 2.843579,
+      "baseline": "numpy_argpartition",
+      "baseline_ms": 2.17596,
+      "speedup": 0.77
+    },
+    {
+      "workload": "top_k n=1048576 k=10",
+      "native": "TopKStrategy::partial_sort",
+      "native_ms": 2.843579,
+      "baseline": "numpy_full_argsort",
+      "baseline_ms": 29.27137,
+      "speedup": 10.29
+    },
+    {
+      "workload": "top_k n=4096 k=10",
+      "native": "TopKStrategy::nth_element",
+      "native_ms": 0.013735,
+      "baseline": "numpy_argpartition",
+      "baseline_ms": 0.01721,
+      "speedup": 1.25
+    },
+    {
+      "workload": "top_k n=4096 k=10",
+      "native": "TopKStrategy::nth_element",
+      "native_ms": 0.013735,
+      "baseline": "numpy_full_argsort",
+      "baseline_ms": 0.06549,
+      "speedup": 4.77
+    },
+    {
+      "workload": "top_k n=65536 k=10",
+      "native": "TopKStrategy::nth_element",
+      "native_ms": 0.602487,
+      "baseline": "numpy_argpartition",
+      "baseline_ms": 0.19121,
+      "speedup": 0.32
+    },
+    {
+      "workload": "top_k n=65536 k=10",
+      "native": "TopKStrategy::nth_element",
+      "native_ms": 0.602487,
+      "baseline": "numpy_full_argsort",
+      "baseline_ms": 1.38932,
+      "speedup": 2.31
+    },
+    {
+      "workload": "top_k n=65536 k=100",
+      "native": "TopKStrategy::nth_element",
+      "native_ms": 0.634662,
+      "baseline": "numpy_argpartition",
+      "baseline_ms": 0.1088,
+      "speedup": 0.17
+    },
+    {
+      "workload": "top_k n=65536 k=100",
+      "native": "TopKStrategy::nth_element",
+      "native_ms": 0.634662,
+      "baseline": "numpy_full_argsort",
+      "baseline_ms": 1.27851,
+      "speedup": 2.01
+    },
+    {
+      "workload": "top_k n=1048576 k=10",
+      "native": "TopKStrategy::nth_element",
+      "native_ms": 3.565469,
+      "baseline": "numpy_argpartition",
+      "baseline_ms": 2.17596,
+      "speedup": 0.61
+    },
+    {
+      "workload": "top_k n=1048576 k=10",
+      "native": "TopKStrategy::nth_element",
+      "native_ms": 3.565469,
+      "baseline": "numpy_full_argsort",
+      "baseline_ms": 29.27137,
+      "speedup": 8.21
+    },
+    {
+      "workload": "top_k n=4096 k=10",
+      "native": "TopKStrategy::heap_bounded",
+      "native_ms": 0.007146,
+      "baseline": "numpy_argpartition",
+      "baseline_ms": 0.01721,
+      "speedup": 2.41
+    },
+    {
+      "workload": "top_k n=4096 k=10",
+      "native": "TopKStrategy::heap_bounded",
+      "native_ms": 0.007146,
+      "baseline": "numpy_full_argsort",
+      "baseline_ms": 0.06549,
+      "speedup": 9.16
+    },
+    {
+      "workload": "top_k n=65536 k=10",
+      "native": "TopKStrategy::heap_bounded",
+      "native_ms": 0.094972,
+      "baseline": "numpy_argpartition",
+      "baseline_ms": 0.19121,
+      "speedup": 2.01
+    },
+    {
+      "workload": "top_k n=65536 k=10",
+      "native": "TopKStrategy::heap_bounded",
+      "native_ms": 0.094972,
+      "baseline": "numpy_full_argsort",
+      "baseline_ms": 1.38932,
+      "speedup": 14.63
+    },
+    {
+      "workload": "top_k n=65536 k=100",
+      "native": "TopKStrategy::heap_bounded",
+      "native_ms": 0.130717,
+      "baseline": "numpy_argpartition",
+      "baseline_ms": 0.1088,
+      "speedup": 0.83
+    },
+    {
+      "workload": "top_k n=65536 k=100",
+      "native": "TopKStrategy::heap_bounded",
+      "native_ms": 0.130717,
+      "baseline": "numpy_full_argsort",
+      "baseline_ms": 1.27851,
+      "speedup": 9.78
+    },
+    {
+      "workload": "top_k n=1048576 k=10",
+      "native": "TopKStrategy::heap_bounded",
+      "native_ms": 1.548528,
+      "baseline": "numpy_argpartition",
+      "baseline_ms": 2.17596,
+      "speedup": 1.41
+    },
+    {
+      "workload": "top_k n=1048576 k=10",
+      "native": "TopKStrategy::heap_bounded",
+      "native_ms": 1.548528,
+      "baseline": "numpy_full_argsort",
+      "baseline_ms": 29.27137,
+      "speedup": 18.9
+    },
+    {
+      "workload": "mmr n=200 k=20",
+      "native": "cpp_greedy",
+      "native_ms": 0.173055,
+      "baseline": "numpy_greedy",
+      "baseline_ms": 0.3269,
+      "speedup": 1.89
+    },
+    {
+      "workload": "mmr n=2000 k=20",
+      "native": "cpp_greedy",
+      "native_ms": 3.966786,
+      "baseline": "numpy_greedy",
+      "baseline_ms": 2.52766,
+      "speedup": 0.64
+    },
+    {
+      "workload": "P(theta_A > theta_B)",
+      "native": "cpp_simpson_4096",
+      "native_ms": 1.232681,
+      "baseline": "scipy_quadrature",
+      "baseline_ms": 1.7589,
+      "speedup": 1.43
+    },
+    {
+      "workload": "95% credible interval",
+      "native": "cpp_bisection",
+      "native_ms": 0.028264,
+      "baseline": "scipy_beta_ppf",
+      "baseline_ms": 0.18058,
+      "speedup": 6.39
+    }
+  ],
+  "counts": {
+    "native": 50,
+    "python": 20,
+    "comparisons": 53
+  }
+}

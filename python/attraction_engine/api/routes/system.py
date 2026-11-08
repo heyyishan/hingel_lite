@@ -74,8 +74,26 @@ def run_benchmark(req: BenchmarkRequest, user_id: str = Depends(current_user)):
     machine = {"cpu_count": os.cpu_count(), "platform": platform.platform(),
                "python": platform.python_version(), "processor": platform.processor()}
 
-    for n_raw in req.sizes:
+    # Bound the working set: an (n x dim) float64 matrix plus a float64 similarity
+    # matrix is 8*n*dim + 8*64*n bytes. On the reference 1.9 GiB host a request for
+    # n=65536, dim=384 would need ~230 MB per array and repeated allocation across
+    # repeats killed the process. Budget 256 MB and clamp accordingly, reporting the
+    # clamp in the response rather than silently shrinking the workload.
+    BUDGET_BYTES = 256 * 1024 * 1024
+    requested = [int(v) for v in req.sizes]
+    clamped: list[dict] = []
+    sizes: list[int] = []
+    for n_raw in requested:
         n = max(req.k + 1, min(int(n_raw), 200000))
+        per_row = 8 * req.dim + 8 * 64
+        cap = max(req.k + 1, BUDGET_BYTES // max(1, per_row))
+        if n > cap:
+            clamped.append({"requested": n, "used": cap,
+                            "reason": f"working set would exceed {BUDGET_BYTES // (1024*1024)} MB"})
+            n = cap
+        sizes.append(n)
+
+    for n in sizes:
         scores = rng.random(n)
         x = rng.normal(size=(n, req.dim))
         x /= np.linalg.norm(x, axis=1, keepdims=True)
@@ -93,23 +111,42 @@ def run_benchmark(req: BenchmarkRequest, user_id: str = Depends(current_user)):
                 "p95_ms": round(times[min(len(times) - 1, int(0.95 * (len(times) - 1)))], 4),
                 "repeats": req.repeats,
             })
-        q = x[: min(64, n)]
-        for threads in req.threads:
-            times = []
-            for _ in range(req.repeats):
-                t0 = time.perf_counter()
-                core.batch_cosine_unit(q, x, threads)
-                times.append((time.perf_counter() - t0) * 1000.0)
-            times.sort()
-            med = times[len(times) // 2]
-            results.append({
-                "benchmark": "batch_cosine", "n": n, "dim": req.dim, "threads": threads,
-                "queries": int(q.shape[0]),
-                "median_ms": round(med, 4),
-                "min_ms": round(times[0], 4),
-                "pairs_per_ms": round((q.shape[0] * n) / max(1e-9, med), 1),
-                "repeats": req.repeats,
-            })
+        q = np.ascontiguousarray(x[: min(64, n)])
+        for kernel in ("eigen", "inhouse"):
+            for threads in req.threads:
+                times = []
+                for _ in range(req.repeats):
+                    t0 = time.perf_counter()
+                    if kernel == "eigen":
+                        core.batch_cosine_eigen(q, x, threads)
+                    else:
+                        core.batch_cosine_unit(q, x, threads)
+                    times.append((time.perf_counter() - t0) * 1000.0)
+                times.sort()
+                med = times[len(times) // 2]
+                results.append({
+                    "benchmark": "batch_cosine", "kernel": kernel, "n": n, "dim": req.dim,
+                    "threads": threads, "queries": int(q.shape[0]),
+                    "median_ms": round(med, 4), "min_ms": round(times[0], 4),
+                    "pairs_per_ms": round((q.shape[0] * n) / max(1e-9, med), 1),
+                    "repeats": req.repeats,
+                })
+        # NumPy/BLAS baseline on the same arrays, so a stored run is self-contained.
+        for _ in range(max(1, req.repeats // 2)):
+            t0 = time.perf_counter()
+            _ = q @ x.T
+        times = []
+        for _ in range(req.repeats):
+            t0 = time.perf_counter()
+            q @ x.T
+            times.append((time.perf_counter() - t0) * 1000.0)
+        times.sort()
+        results.append({"benchmark": "batch_cosine", "kernel": "numpy_blas", "n": n,
+                        "dim": req.dim, "threads": 0, "queries": int(q.shape[0]),
+                        "median_ms": round(times[len(times) // 2], 4),
+                        "min_ms": round(times[0], 4),
+                        "pairs_per_ms": round((q.shape[0] * n) / max(1e-9, times[len(times) // 2]), 1),
+                        "repeats": req.repeats})
 
     with session_scope() as s:
         run = BenchmarkRun(suite="api-inline", machine=machine, results=results)
@@ -117,8 +154,11 @@ def run_benchmark(req: BenchmarkRequest, user_id: str = Depends(current_user)):
         s.flush()
         run_id = run.id
     return {"run_id": run_id, "machine": machine, "results": results,
+            "clamped": clamped,
             "note": "Measured on the API host for this request; includes pybind11 call "
-                    "overhead from Python."}
+                    "overhead from Python." + (
+                        " Some sizes were clamped to keep the working set inside the "
+                        "process memory budget; see `clamped`." if clamped else "")}
 
 
 @router.get("/benchmarks/history")

@@ -9,6 +9,7 @@ from sqlalchemy import select, text
 from ...db.models import Profile
 from ...db.session import IS_POSTGRES, engine, session_scope
 from ...ml import compatibility
+from ... import native as _native
 from ...stats import synthetic
 from ..deps import current_user, rate_limiter
 from ..schemas import RetrievalRequest
@@ -121,7 +122,13 @@ def retrieval(body: RetrievalRequest, user_id: str = Depends(current_user)):
 
     import time
     t0 = time.perf_counter()
-    exact_scores = mat @ query
+    # Retrieval uses the native blocked-GEMM similarity; NumPy BLAS is the fallback
+    # (and the baseline in benchmarks/).
+    if _native.core is not None and mat.shape[0] > 1:
+        exact_scores = np.asarray(_native.core.batch_cosine_eigen(
+            query.reshape(1, -1), np.ascontiguousarray(mat), 0)).ravel()
+    else:
+        exact_scores = mat @ query
     exact_idx = np.argsort(-exact_scores)[: body.top_k]
     exact_ms = (time.perf_counter() - t0) * 1000.0
     exact = [{"id": rows[i][0], "score": round(float(exact_scores[i]), 5)} for i in exact_idx]

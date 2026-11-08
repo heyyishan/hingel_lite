@@ -1,0 +1,51 @@
+{
+  "timestamp_utc": "2026-11-08T07:35:50Z",
+  "os": "Linux 6.1.189+",
+  "distribution": "Debian GNU/Linux 13 (trixie)",
+  "kernel": "#1 SMP PREEMPT_DYNAMIC Mon Nov  2 21:08:28 UTC 2026",
+  "cpu_model": "Intel(R) Xeon(R) Processor @ 2.60GHz",
+  "cpu_count_logical": 2,
+  "cpu_flags": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch cpuid_fault invpcid_single ssbd ibrs ibpb stibp",
+  "memory_total_kb": "2030416",
+  "compiler": {
+    "gcc": "14.2.0",
+    "gxx_std_supported": "c++26",
+    "cpp_compile_flags": "-O3 -std=c++26 -DNDEBUG",
+    "c_compile_flags": "-std=c23 -O3 -fno-math-errno -fno-trapping-math",
+    "sanitizers_in_release": false,
+    "artifacts": {
+      "ae_bench": "/home/user/attraction-engine/cpp/build/ae_bench: ELF 64-bit LSB pie executable, x86-64, version 1 (GNU/Linux), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=09d41b66a88bf1",
+      "libae_core.a": "/home/user/attraction-engine/cpp/build/libae_core.a: current ar archive",
+      "compile_flags_sample": "-O3 -DNDEBUG -std=gnu2x -fPIC -O3"
+    }
+  },
+  "python": {
+    "version": "3.13.16",
+    "implementation": "CPython"
+  },
+  "libraries": {
+    "numpy": "2.3.5",
+    "torch": "2.15.0+cpu",
+    "open_clip": "4.2.1",
+    "sentence_transformers": "6.2.0",
+    "duckdb": "2.0.0",
+    "polars": "2.1.0"
+  },
+  "native_core": {
+    "cxx_dialect": 202400,
+    "has_expected": true,
+    "has_print": true,
+    "has_format": true,
+    "has_openmp": true,
+    "compiler": "gcc",
+    "compiler_version": "14.2.0",
+    "target": "avx512f",
+    "mask": 31,
+    "native_available": true
+  },
+  "notes": [
+    "Benchmarks run inside a container on a shared host with 2 vCPUs.",
+    "Absolute timings are machine-specific; ratios are the portable result.",
+    "Google Benchmark reports CPU time and wall time; medians across repetitions are used in the report."
+  ]
+}

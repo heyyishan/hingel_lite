@@ -108,12 +108,24 @@ def analyse(variants: list[Variant], prior_name: str = "weak_centred",
                                      variants[0].successes + variants[0].failures,
                                      variants[1].successes + variants[1].failures,
                                      min_observations, loss_tolerance)
+        # Name the arms explicitly. "prob_a_better" alone reads as "the better arm
+        # wins" when it actually means "the FIRST arm wins", which can be ~0.01 for a
+        # decisive result in favour of the second arm.
+        leader_is_b = float(d.prob_superiority) < 0.5
         decision = {
             "stop": bool(d.stop),
             "reason": d.reason,
             "prob_a_better": round(float(d.prob_superiority), 6),
+            "prob_first_arm_better": round(float(d.prob_superiority), 6),
+            "a": variants[0].label,
+            "b": variants[1].label,
+            "leader": variants[1].label if leader_is_b else variants[0].label,
+            "leader_probability": round(1.0 - float(d.prob_superiority) if leader_is_b
+                                        else float(d.prob_superiority), 6),
             "expected_loss_choose_a": round(float(d.expected_loss_choose_a), 6),
             "expected_loss_choose_b": round(float(d.expected_loss_choose_b), 6),
+            "expected_loss_choose_leader": round(
+                float(d.expected_loss_choose_b if leader_is_b else d.expected_loss_choose_a), 6),
         }
 
     allocation = core.thompson_allocation(posters, 2000, seed)

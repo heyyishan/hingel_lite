@@ -3,6 +3,7 @@
 #include "test_helpers.hpp"
 
 #include <cmath>
+#include <random>
 
 using namespace ae;
 
@@ -91,6 +92,31 @@ TEST(Similarity, BatchMatchesPairwise) {
     auto mt = batch_cosine_unit(q, x, 2);
     for (std::size_t k = 0; k < m.value.size(); ++k)
         EXPECT_DOUBLE_EQ(m.value[k], mt.value[k]);  // parallel result identical
+}
+
+TEST(Similarity, EigenBatchMatchesScalarPath) {
+    EmbeddingMatrix q(7, 96), x(53, 96);
+    std::mt19937_64 rng(4242);
+    std::normal_distribution<double> nd(0.0, 1.0);
+    auto fill = [&](EmbeddingMatrix& m) {
+        for (std::size_t r = 0; r < m.rows(); ++r) {
+            auto row = m.mutable_row(r);
+            double nrm = 0.0;
+            for (double& v : row) { v = nd(rng); nrm += v * v; }
+            nrm = std::sqrt(nrm);
+            for (double& v : row) v /= nrm;
+        }
+    };
+    fill(q); fill(x);
+    auto scalar = batch_cosine_unit(q, x, 1);
+    auto eigen = batch_cosine_eigen(q, x, 1);
+    ASSERT_EQ(scalar.value.size(), eigen.value.size());
+    double max_err = 0.0;
+    for (std::size_t i = 0; i < scalar.value.size(); ++i)
+        max_err = std::max(max_err, std::abs(scalar.value[i] - eigen.value[i]));
+    // Both are exact inner products of unit vectors; BLAS reassociates the sum,
+    // so agreement is to ~1e-14 rather than bit-exact.
+    EXPECT_LT(max_err, 1e-12) << "max |difference| = " << max_err;
 }
 
 TEST(Similarity, WithinSetIsSymmetricWithUnitDiagonal) {

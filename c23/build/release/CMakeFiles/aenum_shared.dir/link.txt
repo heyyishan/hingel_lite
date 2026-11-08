@@ -1,0 +1,1 @@
+/usr/bin/cc -O3 -DNDEBUG -arch arm64 -dynamiclib -Wl,-headerpad_max_install_names -o libaenum.dylib -install_name @rpath/libaenum.dylib CMakeFiles/aenum_shared.dir/src/core.c.o CMakeFiles/aenum_shared.dir/src/stats.c.o CMakeFiles/aenum_shared.dir/src/image.c.o

@@ -47,6 +47,20 @@ class ProfileIn(BaseModel):
         return [i.strip() for i in v if i and i.strip()]
 
 
+class ProfilePatch(BaseModel):
+    """Partial update: only the fields present in the request body change.
+
+    A full-replace PUT-shaped handler (name/description/interests required) would
+    silently blank fields the client did not send, so PATCH is modelled explicitly.
+    """
+
+    name: str | None = Field(default=None, min_length=1, max_length=120)
+    description: str | None = Field(default=None, max_length=8000)
+    is_primary: bool | None = None
+    structured_prefs: dict[str, Any] | None = None
+    interests: list[str] | None = Field(default=None, max_length=64)
+
+
 class ProfileOut(ORMModel):
     id: str
     name: str
@@ -107,6 +121,10 @@ class ExperimentIn(BaseModel):
 
 
 class ObservationIn(BaseModel):
+    # When omitted, the observation is applied to every variant (a whole-arm
+    # batch). When present, only that arm is credited -- which is what any real
+    # A/B feed needs, since arms accumulate data independently.
+    variant_id: str | None = None
     successes: int = Field(default=0, ge=0)
     failures: int = Field(default=0, ge=0)
     missing: int = Field(default=0, ge=0)
@@ -171,6 +189,14 @@ class OptimizeRequest(BaseModel):
     sa_iterations: int = Field(default=20000, ge=100, le=500000)
 
     model_config = ConfigDict(populate_by_name=True)
+
+
+class SensitivityRequest(BaseModel):
+    profile_id: str
+    lambdas: list[float] = Field(default_factory=lambda: [0.0, 0.2, 0.4, 0.6],
+                                 max_length=12)
+    mus: list[float] = Field(default_factory=lambda: [0.0, 0.1, 0.2], max_length=12)
+    seed: int = 42
 
 
 # -------------------------------------------------------------- retrieval

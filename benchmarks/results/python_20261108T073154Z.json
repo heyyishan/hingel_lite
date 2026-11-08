@@ -1,0 +1,204 @@
+{
+  "python": "3.13.16",
+  "numpy": "2.3.5",
+  "results": [
+    {
+      "benchmark": "dot_product",
+      "implementation": "numpy_dot",
+      "n": 128,
+      "median_ms": 0.00125,
+      "min_ms": 0.00119,
+      "p95_ms": 0.00352,
+      "repeats": 10
+    },
+    {
+      "benchmark": "dot_product",
+      "implementation": "numpy_dot",
+      "n": 384,
+      "median_ms": 0.00128,
+      "min_ms": 0.00124,
+      "p95_ms": 0.00137,
+      "repeats": 10
+    },
+    {
+      "benchmark": "dot_product",
+      "implementation": "numpy_dot",
+      "n": 512,
+      "median_ms": 0.00128,
+      "min_ms": 0.00125,
+      "p95_ms": 0.00133,
+      "repeats": 10
+    },
+    {
+      "benchmark": "dot_product",
+      "implementation": "numpy_dot",
+      "n": 768,
+      "median_ms": 0.00139,
+      "min_ms": 0.00132,
+      "p95_ms": 0.00141,
+      "repeats": 10
+    },
+    {
+      "benchmark": "dot_product",
+      "implementation": "numpy_dot",
+      "n": 1536,
+      "median_ms": 0.00156,
+      "min_ms": 0.0015,
+      "p95_ms": 0.00158,
+      "repeats": 10
+    },
+    {
+      "benchmark": "top_k",
+      "implementation": "numpy_argpartition",
+      "n": 4096,
+      "k": 10,
+      "median_ms": 0.01117,
+      "min_ms": 0.01095,
+      "p95_ms": 0.02843,
+      "repeats": 10
+    },
+    {
+      "benchmark": "top_k",
+      "implementation": "numpy_full_argsort",
+      "n": 4096,
+      "k": 10,
+      "median_ms": 0.04855,
+      "min_ms": 0.04743,
+      "p95_ms": 0.06049,
+      "repeats": 10
+    },
+    {
+      "benchmark": "top_k",
+      "implementation": "numpy_argpartition",
+      "n": 65536,
+      "k": 10,
+      "median_ms": 0.1851,
+      "min_ms": 0.10049,
+      "p95_ms": 0.3861,
+      "repeats": 10
+    },
+    {
+      "benchmark": "top_k",
+      "implementation": "numpy_full_argsort",
+      "n": 65536,
+      "k": 10,
+      "median_ms": 1.16816,
+      "min_ms": 1.05073,
+      "p95_ms": 1.2995,
+      "repeats": 10
+    },
+    {
+      "benchmark": "top_k",
+      "implementation": "numpy_argpartition",
+      "n": 65536,
+      "k": 100,
+      "median_ms": 0.11006,
+      "min_ms": 0.10312,
+      "p95_ms": 0.13604,
+      "repeats": 10
+    },
+    {
+      "benchmark": "top_k",
+      "implementation": "numpy_full_argsort",
+      "n": 65536,
+      "k": 100,
+      "median_ms": 1.10858,
+      "min_ms": 1.05231,
+      "p95_ms": 1.1587,
+      "repeats": 10
+    },
+    {
+      "benchmark": "top_k",
+      "implementation": "numpy_argpartition",
+      "n": 1048576,
+      "k": 10,
+      "median_ms": 2.8909,
+      "min_ms": 2.23523,
+      "p95_ms": 5.34436,
+      "repeats": 10
+    },
+    {
+      "benchmark": "top_k",
+      "implementation": "numpy_full_argsort",
+      "n": 1048576,
+      "k": 10,
+      "median_ms": 31.99251,
+      "min_ms": 30.19498,
+      "p95_ms": 35.16388,
+      "repeats": 10
+    },
+    {
+      "median_ms": 0.39995,
+      "min_ms": 0.33958,
+      "p95_ms": 0.51422,
+      "repeats": 10,
+      "benchmark": "batch_cosine",
+      "implementation": "numpy_blas_matmul",
+      "n": 512,
+      "dim": 384,
+      "queries": 64,
+      "pairs_per_ms": 81930.2
+    },
+    {
+      "median_ms": 2.54676,
+      "min_ms": 2.44475,
+      "p95_ms": 2.68098,
+      "repeats": 10,
+      "benchmark": "batch_cosine",
+      "implementation": "numpy_blas_matmul",
+      "n": 4096,
+      "dim": 384,
+      "queries": 64,
+      "pairs_per_ms": 102932.4
+    },
+    {
+      "median_ms": 24.18674,
+      "min_ms": 22.68667,
+      "p95_ms": 31.31382,
+      "repeats": 10,
+      "benchmark": "batch_cosine",
+      "implementation": "numpy_blas_matmul",
+      "n": 32768,
+      "dim": 384,
+      "queries": 64,
+      "pairs_per_ms": 86706.7
+    },
+    {
+      "benchmark": "mmr",
+      "implementation": "numpy_greedy",
+      "n": 200,
+      "k": 20,
+      "median_ms": 0.47538,
+      "min_ms": 0.41006,
+      "p95_ms": 0.52341,
+      "repeats": 5
+    },
+    {
+      "benchmark": "mmr",
+      "implementation": "numpy_greedy",
+      "n": 2000,
+      "k": 20,
+      "median_ms": 2.39428,
+      "min_ms": 2.31702,
+      "p95_ms": 2.42,
+      "repeats": 5
+    },
+    {
+      "benchmark": "credible_interval",
+      "implementation": "scipy_beta_ppf",
+      "median_ms": 0.15321,
+      "min_ms": 0.13529,
+      "p95_ms": 0.22573,
+      "repeats": 10
+    },
+    {
+      "benchmark": "prob_superiority",
+      "implementation": "scipy_quadrature",
+      "median_ms": 1.50149,
+      "min_ms": 1.47865,
+      "p95_ms": 1.6729,
+      "repeats": 5
+    }
+  ],
+  "method": "time.perf_counter around the optimized NumPy/SciPy call, median of N repeats, ascending sort, p95 by index"
+}

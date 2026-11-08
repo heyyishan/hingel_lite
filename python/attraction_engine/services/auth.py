@@ -16,6 +16,7 @@ import base64
 import hashlib
 import hmac
 import os
+import logging
 import secrets
 import time
 from dataclasses import dataclass
@@ -24,6 +25,8 @@ from sqlalchemy import select
 
 from ..db.models import User
 from ..db.session import session_scope
+
+log = logging.getLogger(__name__)
 
 TOKEN_TTL_SECONDS = int(os.environ.get("AE_TOKEN_TTL", str(60 * 60 * 12)))
 
@@ -99,3 +102,67 @@ def logout(user_id: str) -> None:
         user = s.get(User, user_id)
         if user is not None:
             user.api_token_hash = None
+
+
+# --------------------------------------------------------------------------
+# Signed media URLs
+#
+# A browser cannot attach an Authorization header to an <img> request, so the raw
+# photo endpoint would 401 in the UI. The alternative -- putting the long-lived
+# bearer token in the query string -- leaks it into history and logs. Instead the
+# API issues a short-lived HMAC over (user_id, photo_id, expiry) that grants read
+# access to exactly one photograph for a bounded time.
+# --------------------------------------------------------------------------
+
+_media_key_warned = False
+
+
+def _media_key() -> bytes | None:
+    """HMAC key for signed media URLs, or None when unconfigured.
+
+    Signing is an optimisation for browsers (an <img> tag cannot send a bearer
+    header), not a requirement. If no secret is configured we return None and the
+    listing serves unsigned URLs; the raw endpoint then demands a bearer token.
+    Raising here would turn a missing optional setting into a 500 on every photo
+    list, which is what an earlier version did.
+    """
+    global _media_key_warned
+    secret = os.environ.get("AE_MEDIA_SECRET") or os.environ.get("AE_OWNER_PASSWORD", "")
+    if not secret:
+        if not _media_key_warned:
+            log.warning("AE_MEDIA_SECRET / AE_OWNER_PASSWORD unset: media URLs are "
+                        "unsigned and the raw endpoint requires a bearer token")
+            _media_key_warned = True
+        return None
+    return hashlib.sha256(("media:" + secret).encode("utf-8")).digest()
+
+
+def media_signing_enabled() -> bool:
+    return _media_key() is not None
+
+
+def sign_media(user_id: str, photo_id: str, ttl: int = 900) -> str:
+    """Return ``"<expires>.<mac>"``, or "" when signing is not configured."""
+    key = _media_key()
+    if key is None:
+        return ""
+    expires = int(time.time()) + int(ttl)
+    payload = f"{user_id}:{photo_id}:{expires}"
+    mac = hmac.new(key, payload.encode("utf-8"), hashlib.sha256).hexdigest()[:32]
+    return f"{expires}.{mac}"
+
+
+def verify_media(user_id: str, photo_id: str, signature: str) -> bool:
+    key = _media_key()
+    if key is None or not signature:
+        return False
+    try:
+        expires_raw, mac = signature.split(".", 1)
+        expires = int(expires_raw)
+    except (ValueError, AttributeError):
+        return False
+    if expires < int(time.time()):
+        return False
+    expected = hmac.new(key, f"{user_id}:{photo_id}:{expires}".encode("utf-8"),
+                        hashlib.sha256).hexdigest()[:32]
+    return hmac.compare_digest(mac, expected)

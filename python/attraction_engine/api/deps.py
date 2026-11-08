@@ -35,6 +35,19 @@ def rate_limiter(request: Request) -> None:
     bucket.append(now)
 
 
+def current_user_optional(
+    creds: HTTPAuthorizationCredentials | None = Depends(_bearer),
+) -> str | None:
+    """Bearer auth that returns None instead of raising.
+
+    Used by the photo endpoint, which also accepts a short-lived media signature so
+    that <img> tags can render.
+    """
+    if creds is None or not creds.credentials:
+        return None
+    return auth.resolve(creds.credentials)
+
+
 def current_user(creds: HTTPAuthorizationCredentials | None = Depends(_bearer)) -> str:
     if creds is None or not creds.credentials:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,

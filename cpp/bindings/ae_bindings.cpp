@@ -68,10 +68,17 @@ void bind_similarity(py::module_& m) {
             return out;
         });
 
-    m.def("cosine_unit", [](const py::array_t<double>& a, const py::array_t<double>& b) {
+    m.def("cosine", [](const Matrix& a, const Matrix& b) {
+        const auto va = to_vector(a), vb = to_vector(b);
+        return cosine(va, vb);
+    }, py::arg("a"), py::arg("b"),
+       "Cosine similarity of two arbitrary vectors (normalises internally). "
+       "Returns NaN for a zero vector.");
+    m.def("cosine_unit", [](const Matrix& a, const Matrix& b) {
         const auto va = to_vector(a), vb = to_vector(b);
         return cosine_unit(va, vb);
-    });
+    }, py::arg("a"), py::arg("b"),
+       "Inner product of two UNIT vectors. Do not pass raw vectors: use cosine().");
     m.def("cosine_raw", [](const py::array_t<double>& a, const py::array_t<double>& b) {
         const auto va = to_vector(a), vb = to_vector(b);
         return cosine_raw(va, vb);
@@ -79,6 +86,18 @@ void bind_similarity(py::module_& m) {
     m.def("batch_cosine_unit", [](const Matrix& q, const Matrix& x, unsigned threads) {
         auto mq = to_embedding_matrix(q), mx = to_embedding_matrix(x);
         auto s = batch_cosine_unit(mq, mx, threads);
+        return py::array_t<double>({s.rows, s.cols}, s.value.data());
+    }, py::arg("q"), py::arg("x"), py::arg("threads") = 0,
+       "Cross similarity for UNIT-normalised rows. Rows of q and x must have unit "
+       "L2 norm; batch_cosine_eigen normalises nothing either.");
+    m.def("batch_cosine", [](const Matrix& q, const Matrix& x, unsigned threads) {
+        auto mq = to_embedding_matrix(q), mx = to_embedding_matrix(x);
+        auto s = batch_cosine_eigen(mq, mx, threads);
+        return py::array_t<double>({s.rows, s.cols}, s.value.data());
+    }, py::arg("q"), py::arg("x"), py::arg("threads") = 0);
+    m.def("batch_cosine_eigen", [](const Matrix& q, const Matrix& x, unsigned threads) {
+        auto mq = to_embedding_matrix(q), mx = to_embedding_matrix(x);
+        auto s = batch_cosine_eigen(mq, mx, threads);
         return py::array_t<double>({s.rows, s.cols}, s.value.data());
     }, py::arg("q"), py::arg("x"), py::arg("threads") = 0);
     m.def("within_set_similarity", [](const Matrix& x, unsigned threads) {
@@ -173,7 +192,28 @@ void bind_optimizer(py::module_& m) {
         .def_readwrite("lambda_", &PhotoProblem::lambda)
         .def_readwrite("mu", &PhotoProblem::mu)
         .def_readwrite("positional_kernel", &PhotoProblem::positional_kernel)
-        .def_property_readonly("n", [](const PhotoProblem& p) { return p.n; })
+        // `n` is settable so callers can size the problem before assigning the
+        // per-photo vectors; every list is resized to match.
+        .def_property("n",
+                      [](const PhotoProblem& p) { return p.n; },
+                      [](PhotoProblem& p, std::size_t n) {
+                          p.n = n;
+                          p.quality.resize(n, 0.0);
+                          p.slot_affinity.resize(n, 0.0);
+                          p.position_weight.resize(n, n ? 1.0 / static_cast<double>(n) : 0.0);
+                          p.slot_target.resize(n, 0.0);
+                          p.distance.assign(n * n, 0.0);
+                      })
+        .def(py::init([](std::size_t n) {
+                 PhotoProblem p;
+                 p.n = n;
+                 p.quality.resize(n, 0.0);
+                 p.slot_affinity.resize(n, 0.0);
+                 p.position_weight.assign(n, n ? 1.0 / static_cast<double>(n) : 0.0);
+                 p.slot_target.resize(n, 0.0);
+                 p.distance.assign(n * n, 0.0);
+                 return p;
+             }), py::arg("n"))
         .def("set_distance_matrix", [](PhotoProblem& p, const Matrix& d) {
             auto buf = d.request();
             if (buf.ndim != 2 || buf.shape[0] != buf.shape[1])

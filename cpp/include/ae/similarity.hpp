@@ -49,8 +49,16 @@ private:
 };
 
 // ------------------------------------------------------------ similarity
-// Unit-vector inner product. Prefers the C23 library (SIMD dispatched) when
-// linked; the header-only fallback keeps the C++ core self-contained for tests.
+// Prefers the C23 library (SIMD dispatched) when linked; the header-only fallback
+// keeps the C++ core self-contained for tests.
+//
+// cosine()  normalises internally -> correct for arbitrary input.
+// cosine_unit() asserts unit-norm input: it is a plain dot product and returns a
+//   value in [-1, 1] of the *raw* dot product, which is only the cosine when both
+//   arguments are already normalised. Callers holding unnormalised vectors must
+//   use cosine(). (An earlier binding exposed only cosine_unit, which silently
+//   returned 1.0 for the test vectors [1,2,2] . [2,1,0]; see docs/engineering.md.)
+[[nodiscard]] double cosine(std::span<const double> a, std::span<const double> b);
 [[nodiscard]] double cosine_unit(std::span<const double> a, std::span<const double> b);
 [[nodiscard]] double cosine_raw(std::span<const double> a, std::span<const double> b);
 [[nodiscard]] double l2sq(std::span<const double> a, std::span<const double> b);
@@ -67,6 +75,12 @@ struct SimilarityMatrix {
 [[nodiscard]] SimilarityMatrix batch_cosine_unit(const EmbeddingMatrix& q,
                                                  const EmbeddingMatrix& x,
                                                  unsigned threads = 0);
+
+// Blocked GEMM path (Eigen). Use this for full matrices; the scalar path above is
+// for single pairs and for the in-house SIMD benchmark comparison.
+[[nodiscard]] SimilarityMatrix batch_cosine_eigen(const EmbeddingMatrix& q,
+                                                  const EmbeddingMatrix& x,
+                                                  unsigned threads = 0);
 
 // Symmetric within-set similarity with a zero diagonal (used for diversity).
 [[nodiscard]] SimilarityMatrix within_set_similarity(const EmbeddingMatrix& x,

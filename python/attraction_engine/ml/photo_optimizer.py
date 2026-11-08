@@ -120,7 +120,12 @@ def optimize_ordering(photos: list[dict], embeddings: np.ndarray, quality: np.nd
             "proved_optimal": bool(res.proved_optimal),
         }
         results.append(entry)
-        if best is None or entry["objective"] > best["objective"]:
+        # Prefer a proven optimum: when an exhaustive search completed, its result is
+        # the maximum by construction, so it wins ties against heuristics that merely
+        # happened to land on the same objective.
+        if (best is None or entry["objective"] > best["objective"]
+                or (entry["proved_optimal"] and abs(entry["objective"] - best["objective"]) <= 1e-12
+                    and not best["proved_optimal"])):
             best = entry
 
     baseline_perm = list(range(n))

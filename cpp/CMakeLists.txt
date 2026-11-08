@@ -29,6 +29,7 @@ add_library(aenum STATIC ${AENUM_DIR}/src/core.c ${AENUM_DIR}/src/stats.c ${AENU
 target_include_directories(aenum PUBLIC ${AENUM_DIR}/include)
 set_target_properties(aenum PROPERTIES C_STANDARD 23 C_STANDARD_REQUIRED ON)
 target_compile_options(aenum PRIVATE -O3)
+find_package(Eigen3 REQUIRED NO_MODULE)
 find_package(OpenMP)
 if(OpenMP_CXX_FOUND)
     message(STATUS "OpenMP found: parallel paths enabled")
@@ -45,9 +46,10 @@ add_library(ae_core STATIC
     src/stats.cpp
     src/compat_matcher.cpp
     src/capacity.cpp
+    src/similarity_eigen.cpp
 )
 target_include_directories(ae_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_link_libraries(ae_core PUBLIC aenum)
+target_link_libraries(ae_core PUBLIC aenum Eigen3::Eigen)
 target_link_libraries(ae_core PRIVATE ae_warnings)
 if(OpenMP_CXX_FOUND)
     target_link_libraries(ae_core PUBLIC OpenMP::OpenMP_CXX)
@@ -61,9 +63,11 @@ if(AE_TSAN)
 endif()
 
 add_library(ae_core_shared SHARED
-    src/compat.cpp src/similarity.cpp src/ranking.cpp src/optimizer.cpp src/stats.cpp src/compat_matcher.cpp src/capacity.cpp
+    src/compat.cpp src/similarity.cpp src/ranking.cpp src/optimizer.cpp src/stats.cpp
+    src/compat_matcher.cpp src/capacity.cpp src/similarity_eigen.cpp
     ${AENUM_DIR}/src/core.c ${AENUM_DIR}/src/stats.c ${AENUM_DIR}/src/image.c)
 target_include_directories(ae_core_shared PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include ${AENUM_DIR}/include)
+target_link_libraries(ae_core_shared PUBLIC Eigen3::Eigen)
 set_target_properties(ae_core_shared PROPERTIES OUTPUT_NAME ae_core)
 target_compile_options(ae_core_shared PRIVATE -O3 -fPIC)
 if(OpenMP_CXX_FOUND)
@@ -96,6 +100,9 @@ endif()
 # ------------------------------- benchmarks ---------------------------------
 if(AE_BUILD_BENCH)
     find_package(benchmark REQUIRED)
+    # `ae_dot_scalar/avx2/avx512` are defined in core.c; declare them for the
+    # benchmark translation unit without polluting the public header.
+    add_library(ae_bench_deps INTERFACE)
     add_executable(ae_bench bench/core_bench.cpp)
     target_link_libraries(ae_bench PRIVATE ae_core benchmark::benchmark benchmark::benchmark_main pthread)
 endif()

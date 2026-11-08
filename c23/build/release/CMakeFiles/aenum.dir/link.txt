@@ -1,0 +1,2 @@
+/usr/bin/ar qc libaenum.a CMakeFiles/aenum.dir/src/core.c.o CMakeFiles/aenum.dir/src/stats.c.o CMakeFiles/aenum.dir/src/image.c.o
+/usr/bin/ranlib libaenum.a
