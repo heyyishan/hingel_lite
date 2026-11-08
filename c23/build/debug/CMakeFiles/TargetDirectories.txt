@@ -1,0 +1,6 @@
+/home/user/attraction-engine/c23/build/debug/CMakeFiles/aenum.dir
+/home/user/attraction-engine/c23/build/debug/CMakeFiles/aenum_shared.dir
+/home/user/attraction-engine/c23/build/debug/CMakeFiles/aenum_tests.dir
+/home/user/attraction-engine/c23/build/debug/CMakeFiles/test.dir
+/home/user/attraction-engine/c23/build/debug/CMakeFiles/edit_cache.dir
+/home/user/attraction-engine/c23/build/debug/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,32 @@
+{
+  "trained_on": "synthetic mixture-of-Gaussians pairs (label noise 8%)",
+  "architecture": "MLP([u_i,u_j,|u_i-u_j|,u_i*u_j]) -> GELU -> scalar, symmetric head",
+  "n_pairs": 7970,
+  "n_train": 5977,
+  "n_val": 1993,
+  "best_epoch": 128,
+  "validation": {
+    "val_loss": 0.50706,
+    "val_accuracy": 0.7787,
+    "val_brier": 0.1648,
+    "epoch": 128
+  },
+  "validation_calibration": {
+    "ece": 0.0467,
+    "brier": 0.1607,
+    "n": 1993,
+    "note": "Synthetic held-out pairs; labels come from the generator, so calibration here measures the pipeline, not human outcomes."
+  },
+  "config": {
+    "hidden": 24,
+    "epochs": 160,
+    "lr": 0.003,
+    "batch_size": 128,
+    "weight_decay": 0.01,
+    "val_fraction": 0.25,
+    "seed": 1234,
+    "n_candidates": 4000,
+    "n_clusters": 6,
+    "dim": 16
+  }
+}

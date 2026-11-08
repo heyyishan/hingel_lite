@@ -1,0 +1,67 @@
+[PASS] healthz responds  — {"status":"ok","native":true,"db":true,"cache":true}
+[PASS] capabilities: native core present  — avx512f
+[PASS] capabilities: c++26 dialect >= 202302  — 202400
+[PASS] capabilities: encoders reported  — openclip:ViT-B-32
+      db=postgresql+psycopg2 pgvector=0.8.0 cache=True
+[PASS] auth: wrong password rejected  — 401
+[PASS] auth: login succeeds  — 200
+[PASS] auth: token accepted
+[PASS] auth: anonymous rejected  — 401
+[PASS] profile: created
+[PASS] profile: empty prompt answer rejected (422)  — 422
+[PASS] photo: upload sky.png  — q=0.3865 scene=outdoor_nature
+[PASS] photo: upload dark.png  — q=0.3717 scene=portrait_closeup
+[PASS] photo: upload green.png  — q=0.4191 scene=outdoor_urban
+[PASS] photo: upload graphic.png  — q=0.4736 scene=outdoor_urban
+[PASS] photo: non-image rejected (415)  — 415
+[PASS] photo: listed with analyses  — 4 photos
+[PASS] photo: encoders are real (CLIP)  — openclip-zero-shot
+[PASS] photo: raw bytes served
+[PASS] intelligence: report generated  — 5 recommendations
+[PASS] intelligence: visual diversity computed  — diversity=0.3238
+[PASS] intelligence: text blocks analysed  — 3 blocks
+[PASS] intelligence: limitations disclosed
+[PASS] intelligence: confidence is evidence coverage
+[PASS] laboratory: optimization ran  — 5 strategies
+[PASS] laboratory: exhaustive proved optimal  — n=4 (n! enumeration feasible)
+[PASS] laboratory: all strategies agree on optimum  — {'greedy': 0.627292, 'beam': 0.627292, 'simulated_annealing': 0.627292, 'random_restart': 0.627292, 'exhaustive': 0.627292}
+[PASS] laboratory: sensitivity grid  — 15 cells
+[PASS] laboratory: ablation rows  — worst loss=0.0021
+[PASS] laboratory: ordering persisted
+[PASS] laboratory: persisted order matches
+[PASS] compatibility: synthetic pool
+[PASS] compatibility: pool labelled synthetic
+[PASS] compatibility: ranking produced
+[PASS] compatibility: metrics computed  — {"k": 10, "relevant_definition": "synthetic affinity >= 0.66", "precision_at_k": 1.0, "recall_at_k": 0.6667, "ndcg_at_k": 0.9748, "n_relevant": 15}
+[PASS] compatibility: trained neural head applied  — trained-synthetic
+[PASS] compatibility: diversity reranking changes order
+[PASS] compatibility: ANN retrieval executed  — exact=0.046ms ann=1.323ms recall=1.0
+[PASS] experiments: created  — c2262dff
+[PASS] experiments: observations recorded
+[PASS] experiments: posterior computed  — 200
+[PASS] experiments: posterior mean matches Beta(α+s, β+f)  — 0.226315789474 vs 0.226315789474
+[PASS] experiments: missing != failure
+[PASS] experiments: credible interval present
+[PASS] experiments: thompson allocation sums
+[PASS] experiments: multiplicity adjusted  — bonferroni=0.0250
+[PASS] experiments: density curves for plotting
+[PASS] experiments: hierarchical model fitted
+[PASS] experiments: synthetic simulation labelled
+[PASS] counterfactual: simulation ran  — ΔQ=0.04622 (baseline 0.390159)
+[PASS] counterfactual: honesty statement present
+[PASS] counterfactual: attribution computed
+[PASS] counterfactual: model version labelled
+[PASS] conversations: imported and analysed  — reciprocity=1.0
+[PASS] conversations: raw text not stored
+[PASS] conversations: refusal of psychological inference
+[PASS] conversations: retrievable
+[PASS] conversations: synthetic labelled
+[PASS] benchmarks: executed and stored  — 12 measurements
+[PASS] benchmarks: heap faster than full sort at n=4096  — heap=0.0127ms sort=0.2762ms
+[PASS] privacy: export contains profiles  — 1 profiles, 2 experiments
+[PASS] privacy: policy published
+[PASS] profile: deleted (204)
+
+upload+analysis wall time for 4 photos: 4.9s
+
+62/62 checks passed

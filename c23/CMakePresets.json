@@ -1,0 +1,9 @@
+{
+  "version": 3,
+  "configurePresets": [
+    { "name": "debug", "binaryDir": "${sourceDir}/build/debug",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug", "AENUM_BUILD_TESTS": "ON", "AENUM_SANITIZE": "ON" } },
+    { "name": "release", "binaryDir": "${sourceDir}/build/release",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release", "AENUM_BUILD_TESTS": "ON" } }
+  ]
+}
